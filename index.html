@@ -1,286 +1,263 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Heart Message</title>
-    <!-- خط بكسل من Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: 'Press Start 2P', cursive;
+        * { box-sizing: border-box; font-family: 'Press Start 2P', cursive; }
+        body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        canvas#pixelCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        
+        /* Login Box Styling */
+        .login-box { 
+            position: relative; 
+            z-index: 10; 
+            background: rgba(17, 17, 17, 0.9); 
+            border: 4px solid #ff2a6d; 
+            padding: 25px; 
+            text-align: center; 
+            box-shadow: 0 0 20px #ff2a6d; 
+            width: 320px;
+            transition: all 0.5s ease;
         }
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: #fff;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .login-box label { display: block; margin-bottom: 15px; font-size: 10px; color: #05d9e8; line-height: 1.6; }
+        .login-box input { width: 100%; padding: 10px; background: #000; border: 2px solid #05d9e8; color: #fff; font-size: 10px; text-align: center; margin-bottom: 15px; outline: none; }
+        .login-box button { 
+            background: #ff2a6d; 
+            color: #fff; 
+            border: none; 
+            padding: 12px 15px; 
+            font-size: 10px; 
+            cursor: pointer; 
+            box-shadow: 3px 3px 0px #fff; 
+            transition: transform 0.1s, background-color 0.3s;
+        }
+        .login-box button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #fff; }
+
+        /* Login Button Animation */
+        .btn-loading {
+            animation: btnPulse 0.6s infinite alternate;
+            background: #05d9e8 !important;
+            color: #000 !important;
+        }
+        @keyframes btnPulse {
+            0% { opacity: 0.6; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1.02); }
         }
 
-        /* تساقط قلوب البكسل */
-        canvas#pixelCanvas {
+        .main-content { 
+            display: none; 
+            position: relative; 
+            z-index: 5; 
+            flex-direction: column; 
+            align-items: center; 
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .main-content.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Transparent Pixel Heart Styling */
+        .pixel-heart-container {
+            position: relative;
+            width: 280px;
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1.2s infinite alternate;
+        }
+        
+        .pixel-heart-outline {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
-        }
-
-        /* نافذة طلب الاسم */
-        .login-box {
-            position: relative;
-            z-index: 10;
-            background: #111;
-            border: 4px solid #ff2a6d;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 0 15px #ff2a6d;
-            max-width: 90%;
-            width: 320px;
-        }
-        .login-box label {
-            display: block;
-            margin-bottom: 15px;
-            font-size: 10px;
-            line-height: 1.6;
-            color: #05d9e8;
-        }
-        .login-box input {
-            width: 100%;
-            padding: 10px;
-            background: #000;
-            border: 2px solid #05d9e8;
-            color: #fff;
-            font-size: 10px;
-            text-align: center;
-            margin-bottom: 15px;
-            outline: none;
-        }
-        .login-box button {
-            background: #ff2a6d;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            font-size: 10px;
-            cursor: pointer;
-            box-shadow: 3px 3px 0px #fff;
-        }
-        .login-box button:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0px #fff;
-        }
-
-        /* المحتوى الرئيسي للموقع */
-        .main-content {
-            display: none;
-            position: relative;
-            z-index: 5;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        /* رسمة قلب البكسل والكتابة داخلها */
-        .pixel-heart {
-            position: relative;
-            width: 260px;
-            height: 240px;
-            background: #ff2a6d;
+            background: transparent;
+            border: 6px solid #ff2a6d;
+            box-shadow: 0 0 15px #ff2a6d, inset 0 0 15px #ff2a6d;
             clip-path: polygon(
                 20% 0%, 40% 0%, 50% 15%, 60% 0%, 80% 0%, 
                 100% 20%, 100% 50%, 50% 100%, 0% 50%, 0% 20%
             );
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 25px rgba(255, 42, 109, 0.8);
-            animation: pulse 1.2s infinite alternate;
         }
-        .pixel-heart span {
+
+        .pixel-heart-text {
+            position: relative;
+            z-index: 2;
             color: #fff;
             font-size: 14px;
-            line-height: 1.8;
-            text-shadow: 2px 2px #000;
+            text-shadow: 0 0 8px #ff2a6d, 2px 2px #000;
+            text-align: center;
             padding: 10px;
+            line-height: 1.8;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.08); }
+        @keyframes pulse { 
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px #ff2a6d); } 
+            100% { transform: scale(1.08); filter: drop-shadow(0 0 20px #ff2a6d); } 
         }
 
-        /* لوحة التحكم لعرض الأسماء (تظهر لك فقط) */
-        .admin-panel {
+        /* Admin Secret Sidebar */
+        .admin-sidebar {
             display: none;
-            position: relative;
-            z-index: 10;
-            background: #000;
-            border: 4px solid #05d9e8;
-            padding: 20px;
-            width: 320px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            background: rgba(17, 17, 17, 0.95);
+            border: 3px solid #05d9e8;
+            padding: 15px;
+            width: 280px;
             max-height: 80vh;
             overflow-y: auto;
-            text-align: center;
             box-shadow: 0 0 15px #05d9e8;
         }
-        .admin-panel h2 {
-            font-size: 12px;
-            color: #05d9e8;
-            margin-bottom: 15px;
-        }
-        .admin-panel ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .admin-panel li {
-            background: #111;
-            border: 1px solid #ff2a6d;
-            padding: 8px;
-            margin-bottom: 8px;
-            font-size: 9px;
-            color: #fff;
-        }
+        .admin-sidebar h3 { font-size: 10px; color: #05d9e8; margin-top: 0; margin-bottom: 15px; text-align: center; }
+        .admin-sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .admin-sidebar li { background: #000; border: 1px solid #ff2a6d; padding: 8px; margin-bottom: 8px; font-size: 8px; color: #fff; line-height: 1.4; word-break: break-all; }
     </style>
 </head>
 <body>
 
     <canvas id="pixelCanvas"></canvas>
 
-    <!-- 1. شاشة إدخال الاسم -->
+    <!-- Login Screen -->
     <div class="login-box" id="loginBox">
-        <label for="userName">ادخل اسمك للتسجيل:</label>
-        <input type="text" id="userName" placeholder="الاسم هنا..." autocomplete="off">
-        <button onclick="handleLogin()">تسجيل الدخول</button>
+        <label for="userName">ENTER YOUR NAME:</label>
+        <input type="text" id="userName" placeholder="Type here..." autocomplete="off">
+        <button id="loginBtn" onclick="handleLogin()">SUBMIT</button>
     </div>
 
-    <!-- 2. قلب الحب بالبكسل -->
+    <!-- Heart Screen -->
     <div class="main-content" id="mainContent">
-        <div class="pixel-heart">
-            <span>I LOVE YOU</span>
+        <div class="pixel-heart-container">
+            <div class="pixel-heart-outline"></div>
+            <div class="pixel-heart-text">I LOVE YOU</div>
         </div>
     </div>
 
-    <!-- 3. قائمة الأسماء للآدمن -->
-    <div class="admin-panel" id="adminPanel">
-        <h2>قائمة الأسماء التي دخلت الموقع:</h2>
-        <ul id="namesList"></ul>
+    <!-- Admin Panel -->
+    <div class="admin-sidebar" id="adminSidebar">
+        <h3>VISITOR LOG (yosef)</h3>
+        <ul id="namesList"><li>Loading...</li></ul>
     </div>
 
     <script>
-        // ** ضع اسمك الخاص هنا للوصول للقائمة **
-        const ADMIN_NAME = "yosef"; // يمكنك تغيير الاسم إلى اسمك باللغة التي تفضلها
+        const BIN_ID = "6a8a29bbda38895dfe05305c"; 
+        const MASTER_KEY = "$2a$10$uOfTZgyBYBrFiwvCyQxyg.o2Xy9qgj/GRPm2C2qbBNxtscnLFYJ82";
 
-        // نظام تسجيل الأسماء
-        function handleLogin() {
+        async function handleLogin() {
             const nameInput = document.getElementById('userName').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            const loginBox = document.getElementById('loginBox');
+            const mainContent = document.getElementById('mainContent');
+
             if (!nameInput) {
-                alert("يرجى كتابة الاسم أولاً!");
+                alert("Please enter a name first!");
                 return;
             }
 
-            document.getElementById('loginBox').style.display = 'none';
+            loginBtn.classList.add('btn-loading');
+            loginBtn.innerText = "LOADING...";
 
-            // التحقق إذا كان الاسم هو اسم الآدمن
-            if (nameInput.toLowerCase() === ADMIN_NAME.toLowerCase()) {
-                showAdminPanel();
+            if (nameInput.toLowerCase() === "yosef") {
+                document.getElementById('adminSidebar').style.display = 'block';
+                loadNames();
             } else {
-                // حفظ الاسم في المتصفح
-                saveName(nameInput);
-                document.getElementById('mainContent').style.display = 'flex';
+                saveNameToCloud(nameInput);
             }
+
+            setTimeout(() => {
+                loginBox.style.opacity = '0';
+                setTimeout(() => {
+                    loginBox.style.display = 'none';
+                    mainContent.classList.add('show');
+                }, 400);
+            }, 1000);
         }
 
-        function saveName(name) {
-            let names = JSON.parse(localStorage.getItem('registered_names') || '[]');
-            names.push({ name: name, date: new Date().toLocaleString('ar-EG') });
-            localStorage.setItem('registered_names', JSON.stringify(names));
-        }
-
-        function showAdminPanel() {
-            const adminPanel = document.getElementById('adminPanel');
-            const namesList = document.getElementById('namesList');
-            let names = JSON.parse(localStorage.getItem('registered_names') || '[]');
-
-            namesList.innerHTML = '';
-            if (names.length === 0) {
-                namesList.innerHTML = '<li>لا يوجد أسماء مسجلة بعد</li>';
-            } else {
-                names.forEach((item) => {
-                    let li = document.createElement('li');
-                    li.textContent = `${item.name} (${item.date})`;
-                    namesList.appendChild(li);
+        async function saveNameToCloud(name) {
+            try {
+                const resGet = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
                 });
+                const dataGet = await resGet.json();
+                let currentNames = Array.isArray(dataGet.record) ? dataGet.record : [];
+
+                currentNames.push({ name: name, date: new Date().toLocaleString('en-US') });
+
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': MASTER_KEY
+                    },
+                    body: JSON.stringify(currentNames)
+                });
+            } catch (err) {
+                console.log("Error saving data:", err);
             }
-            adminPanel.style.display = 'block';
         }
 
-        // انيميشن القلوب المتساقطة بالبكسل
+        async function loadNames() {
+            const list = document.getElementById('namesList');
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
+                });
+                const data = await res.json();
+                let names = data.record;
+                
+                list.innerHTML = '';
+                if (!names || names.length === 0) {
+                    list.innerHTML = '<li>No submissions yet</li>';
+                } else {
+                    names.reverse().forEach(item => {
+                        let li = document.createElement('li');
+                        li.innerHTML = `<strong>${item.name}</strong><br><span style="color:#05d9e8">${item.date}</span>`;
+                        list.appendChild(li);
+                    });
+                }
+            } catch (err) {
+                list.innerHTML = '<li>Error loading data</li>';
+            }
+        }
+
+        /* Pixel Canvas Animation */
         const canvas = document.getElementById('pixelCanvas');
         const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
         const hearts = [];
-        const heartCount = 40;
-
-        for (let i = 0; i < heartCount; i++) {
-            hearts.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.floor(Math.random() * 3) + 2, // حجم البكسل
-                speed: Math.random() * 2 + 1
-            });
+        for (let i = 0; i < 40; i++) {
+            hearts.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.floor(Math.random() * 3) + 2, speed: Math.random() * 2 + 1 });
         }
 
-        // رسم قلب بكسلي على Canvas
         function drawPixelHeart(x, y, scale) {
             ctx.fillStyle = '#ff2a6d';
-            const pixelMap = [
-                [0,1,1,0,1,1,0],
-                [1,1,1,1,1,1,1],
-                [1,1,1,1,1,1,1],
-                [0,1,1,1,1,1,0],
-                [0,0,1,1,1,0,0],
-                [0,0,0,1,0,0,0]
-            ];
-
+            const pixelMap = [[0,1,1,0,1,1,0],[1,1,1,1,1,1,1],[1,1,1,1,1,1,1],[0,1,1,1,1,1,0],[0,0,1,1,1,0,0],[0,0,0,1,0,0,0]];
             for (let r = 0; r < pixelMap.length; r++) {
                 for (let c = 0; c < pixelMap[r].length; c++) {
-                    if (pixelMap[r][c] === 1) {
-                        ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
-                    }
+                    if (pixelMap[r][c] === 1) ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
                 }
             }
         }
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < hearts.length; i++) {
-                let h = hearts[i];
+            for (let h of hearts) {
                 drawPixelHeart(h.x, h.y, h.size);
                 h.y += h.speed;
-                if (h.y > canvas.height) {
-                    h.y = -20;
-                    h.x = Math.random() * canvas.width;
-                }
+                if (h.y > canvas.height) { h.y = -20; h.x = Math.random() * canvas.width; }
             }
             requestAnimationFrame(animate);
         }
-
         animate();
     </script>
 </body>
