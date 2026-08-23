@@ -18,7 +18,6 @@
             border: 4px solid #ff2a6d; 
             padding: 25px; 
             text-align: center; 
-            /* 3D Box Shadow with depth */
             box-shadow: 
                 6px 6px 0px #9b004c, 
                 12px 12px 0px #000, 
@@ -96,49 +95,71 @@
             opacity: 1;
         }
 
-        /* 3D Pixel Heart Container */
-        .pixel-heart-container {
+        /* Original Pixel Heart Styling */
+        .pixel-heart {
             position: relative;
-            width: 320px;
-            height: 300px;
+            width: 200px;
+            height: 180px;
+            background: #ff2a6d;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            box-shadow: 
+                0 0 20px #ff2a6d,
+                inset -8px -8px 0px #9b004c,
+                inset 8px 8px 0px #ff69b4;
             animation: pulse 1.2s infinite alternate;
         }
-        
-        canvas#heartCanvas {
+
+        .pixel-heart:before,
+        .pixel-heart:after {
+            content: "";
             position: absolute;
-            top: 0;
+            width: 100px;
+            height: 100px;
+            background: #ff2a6d;
+            border-radius: 50%;
+        }
+
+        .pixel-heart:before {
+            top: -50px;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            box-shadow: inset 8px 8px 0px #ff69b4;
+        }
+
+        .pixel-heart:after {
+            top: 0;
+            left: -50px;
+            box-shadow: inset 8px 8px 0px #ff69b4;
+        }
+
+        .pixel-heart-container {
+            position: relative;
+            transform: rotate(45deg);
+            margin-top: 50px;
         }
 
         .pixel-heart-text {
+            transform: rotate(-45deg);
             position: relative;
-            z-index: 2;
+            z-index: 10;
             color: #fff;
-            font-size: 11px;
-            text-shadow: 0 0 8px #000, 2px 2px #000;
+            font-size: 10px;
+            text-shadow: 2px 2px #000;
             text-align: center;
-            padding: 15px;
-            line-height: 1.8;
-            margin-top: 20px;
+            line-height: 1.6;
             word-break: break-word;
         }
 
         .names-display {
             color: #05d9e8;
-            font-size: 10px;
-            margin-top: 6px;
-            text-shadow: 0 0 5px #000, 1px 1px #000;
+            font-size: 9px;
+            margin-top: 5px;
         }
 
         @keyframes pulse { 
-            0% { transform: scale(1); filter: drop-shadow(0 0 8px #ff1493); } 
-            100% { transform: scale(1.08); filter: drop-shadow(0 0 25px #ff1493); } 
+            0% { transform: rotate(45deg) scale(1); } 
+            100% { transform: rotate(45deg) scale(1.08); } 
         }
 
         /* 3D Admin Sidebar / Visitor Log */
@@ -220,13 +241,14 @@
         <div class="error-msg" id="errorMsg">PLEASE FILL BOTH NAMES!</div>
     </div>
 
-    <!-- 3D Heart Screen -->
+    <!-- Original Pixel Heart Screen -->
     <div class="main-content" id="mainContent">
         <div class="pixel-heart-container">
-            <canvas id="heartCanvas" width="20" height="18"></canvas>
-            <div class="pixel-heart-text">
-                I LOVE YOU
-                <div class="names-display" id="heartNames"></div>
+            <div class="pixel-heart">
+                <div class="pixel-heart-text">
+                    I LOVE YOU
+                    <div class="names-display" id="heartNames"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -250,10 +272,8 @@
             const heartNames = document.getElementById('heartNames');
             const errorMsg = document.getElementById('errorMsg');
 
-            // منع الدخول إذا كانت أحد الخانات فارغة
             if (!nameInput || !crushInput) {
                 errorMsg.style.display = 'block';
-                loginBox.style.borderColor = '#ff2a6d';
                 return;
             }
 
@@ -275,7 +295,6 @@
                 setTimeout(() => {
                     loginBox.style.display = 'none';
                     mainContent.classList.add('show');
-                    draw3DHeart();
                 }, 400);
             }, 1000);
         }
@@ -330,52 +349,6 @@
                 }
             } catch (err) {
                 list.innerHTML = '<li>Error loading data</li>';
-            }
-        }
-
-        /* Center 3D Pixel Heart Renderer */
-        function draw3DHeart() {
-            const hCanvas = document.getElementById('heartCanvas');
-            const hCtx = hCanvas.getContext('2d');
-            
-            const C = {
-                0: 'transparent',
-                1: '#9b004c',
-                2: '#d80068',
-                3: '#ff1493',
-                4: '#ff69b4',
-                5: '#ffb6c1',
-                6: '#ffffff'
-            };
-
-            const heartMap = [
-                [0,0,1,1,1,0,0,0,0,0,0,1,1,1,0,0],
-                [0,1,2,3,3,1,0,0,0,0,1,2,3,3,1,0],
-                [1,2,6,5,3,3,1,0,0,1,2,3,3,3,3,1],
-                [1,2,6,6,5,3,3,1,1,2,5,4,3,3,3,1],
-                [1,2,5,6,6,4,3,3,2,5,4,3,3,3,3,1],
-                [1,2,3,5,4,3,3,3,4,3,3,3,3,3,2,1],
-                [1,2,3,3,3,3,3,3,3,3,3,3,3,2,1,0],
-                [0,1,2,3,3,3,3,3,3,3,3,3,2,1,0,0],
-                [0,0,1,2,3,3,3,3,3,3,3,2,1,0,0,0],
-                [0,0,0,1,2,3,3,3,3,3,2,1,0,0,0,0],
-                [0,0,0,0,1,2,3,3,3,2,1,0,0,0,0,0],
-                [0,0,0,0,0,1,2,3,2,1,0,0,0,0,0,0],
-                [0,0,0,0,0,0,1,2,1,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]
-            ];
-
-            hCanvas.width = 16;
-            hCanvas.height = 14;
-
-            for (let r = 0; r < heartMap.length; r++) {
-                for (let c = 0; c < heartMap[r].length; c++) {
-                    let colorKey = heartMap[r][c];
-                    if (colorKey !== 0) {
-                        hCtx.fillStyle = C[colorKey];
-                        hCtx.fillRect(c, r, 1, 1);
-                    }
-                }
             }
         }
 
