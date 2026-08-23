@@ -3,83 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Heart Message</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>Romantic Pixel Heart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Great+Vibes&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; font-family: 'Press Start 2P', cursive; }
-        body { margin: 0; background: #000; color: #fff; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            background: #05020a; 
+            color: #fff; 
+            overflow: hidden; 
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-family: 'Press Start 2P', cursive; 
+        }
+
         canvas#pixelCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         
         /* 3D Login Box Styling */
         .login-box { 
             position: relative; 
             z-index: 10; 
-            background: #111; 
-            border: 4px solid #ff2a6d; 
-            padding: 25px; 
+            background: rgba(17, 17, 24, 0.95); 
+            border: 3px solid #ff2a6d; 
+            padding: 30px; 
             text-align: center; 
-            box-shadow: 
-                6px 6px 0px #9b004c, 
-                12px 12px 0px #000, 
-                0 0 25px rgba(255, 42, 109, 0.5); 
-            width: 320px;
-            transform: perspective(600px) rotateY(-4deg) rotateX(2deg);
+            box-shadow: 0 0 30px rgba(255, 42, 109, 0.4), 8px 8px 0px #000; 
+            width: 340px;
+            border-radius: 12px;
+            transform: perspective(600px) rotateY(-3deg);
             transition: transform 0.3s ease, opacity 0.5s ease;
         }
-        .login-box:hover {
-            transform: perspective(600px) rotateY(0deg) rotateX(0deg);
-        }
 
-        .login-box label { display: block; margin-top: 10px; margin-bottom: 8px; font-size: 9px; color: #05d9e8; line-height: 1.4; text-align: left; text-shadow: 1px 1px 0px #000; }
+        .login-box label { display: block; margin-top: 12px; margin-bottom: 6px; font-size: 8px; color: #05d9e8; text-align: left; letter-spacing: 1px; }
         .login-box input { 
             width: 100%; 
-            padding: 10px; 
+            padding: 12px; 
             background: #000; 
             border: 2px solid #05d9e8; 
             color: #fff; 
             font-size: 10px; 
             text-align: center; 
-            margin-bottom: 10px; 
             outline: none; 
-            box-shadow: inset 2px 2px 0px #008b9b;
+            border-radius: 6px;
+            font-family: 'Press Start 2P', cursive;
         }
-        .login-box input:focus {
-            border-color: #ff2a6d;
-            box-shadow: inset 2px 2px 0px #9b004c, 0 0 8px #ff2a6d;
-        }
+        .login-box input:focus { border-color: #ff2a6d; box-shadow: 0 0 10px rgba(255, 42, 109, 0.5); }
 
         .login-box button { 
-            background: #ff2a6d; 
+            background: linear-gradient(45deg, #ff2a6d, #ff5e97); 
             color: #fff; 
             border: none; 
-            padding: 12px 15px; 
-            font-size: 10px; 
+            padding: 14px; 
+            font-size: 9px; 
             cursor: pointer; 
-            box-shadow: 0 5px 0px #9b004c, 0 8px 15px rgba(255, 42, 109, 0.6); 
-            margin-top: 10px;
+            margin-top: 18px;
             width: 100%;
-            transition: transform 0.1s, background-color 0.3s;
+            border-radius: 6px;
+            box-shadow: 0 4px 0px #800033;
+            font-family: 'Press Start 2P', cursive;
+            transition: all 0.2s;
         }
-        .login-box button:active { transform: translateY(4px); box-shadow: 0 1px 0px #9b004c; }
+        .login-box button:active { transform: translateY(3px); box-shadow: 0 1px 0px #800033; }
 
-        .error-msg {
-            color: #ff2a6d;
-            font-size: 8px;
-            margin-top: 8px;
-            display: none;
-            text-shadow: 1px 1px 0px #000;
-        }
-
-        .btn-loading {
-            animation: btnPulse 0.6s infinite alternate;
-            background: #05d9e8 !important;
-            color: #000 !important;
-            box-shadow: 0 5px 0px #008b9b !important;
-        }
-        @keyframes btnPulse {
-            0% { opacity: 0.6; transform: scale(0.98); }
-            100% { opacity: 1; transform: scale(1.02); }
-        }
+        .error-msg { color: #ff2a6d; font-size: 8px; margin-top: 10px; display: none; }
 
         .main-content { 
             display: none; 
@@ -87,85 +75,102 @@
             z-index: 5; 
             flex-direction: column; 
             align-items: center; 
+            justify-content: center;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 0.8s ease-in-out;
         }
-        .main-content.show {
-            display: flex;
-            opacity: 1;
-        }
+        .main-content.show { display: flex; opacity: 1; }
 
-        /* 3D Rendered Pixel Heart Container */
-        .pixel-heart-container {
+        /* Smooth Romantic 3D Heart Wrapper */
+        .heart-wrapper {
             position: relative;
-            width: 320px;
-            height: 300px;
+            width: 360px;
+            height: 340px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: pulse3D 1.2s infinite alternate ease-in-out;
-            transform-style: preserve-3d;
+            animation: romanticPulse 1.4s infinite alternate ease-in-out;
+            filter: drop-shadow(0 0 25px rgba(255, 42, 109, 0.8));
         }
-        
-        canvas#heartCanvas {
+
+        .heart-svg {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
+            top: 0;
+            left: 0;
             z-index: 1;
-            filter: drop-shadow(8px 12px 0px rgba(0,0,0,0.8)) drop-shadow(0 0 15px rgba(255, 42, 109, 0.6));
+            transition: all 0.5s ease;
         }
 
-        .pixel-heart-text {
+        .heart-text-container {
             position: relative;
             z-index: 2;
-            color: #fff;
-            font-size: 11px;
-            text-shadow: 2px 2px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000, -2px 2px 0px #000, 0 0 8px #ff2a6d;
             text-align: center;
-            padding: 15px;
-            line-height: 1.8;
-            margin-top: 15px;
-            word-break: break-word;
+            padding: 20px;
+            margin-top: -10px;
         }
 
-        .names-display {
+        .heart-title {
+            font-size: 11px;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px #000, -1px -1px 0px #000, 0 0 10px #ff2a6d;
+            margin-bottom: 12px;
+        }
+
+        /* Romantic Names Side-by-Side */
+        .names-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 11px;
             color: #05d9e8;
-            font-size: 10px;
-            margin-top: 6px;
-            text-shadow: 2px 2px 0px #000, 0 0 6px #05d9e8;
+            text-shadow: 2px 2px 0px #000, 0 0 8px #05d9e8;
+            white-space: nowrap;
         }
 
-        @keyframes pulse3D { 
-            0% { transform: perspective(500px) rotateX(10deg) scale(1); } 
-            100% { transform: perspective(500px) rotateX(0deg) scale(1.08); } 
+        .heart-icon {
+            color: #ff2a6d;
+            font-size: 12px;
+            animation: miniPulse 0.8s infinite alternate;
+            text-shadow: 0 0 6px #ff2a6d;
         }
 
-        /* Live Design Switcher Panel */
+        @keyframes romanticPulse { 
+            0% { transform: scale(1) rotate(0deg); } 
+            100% { transform: scale(1.06) rotate(1deg); } 
+        }
+
+        @keyframes miniPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.3); }
+        }
+
+        /* Customization Toolbar */
         .design-controls {
             display: none;
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             z-index: 30;
-            background: #111;
-            border: 3px solid #ff2a6d;
-            padding: 10px;
-            box-shadow: 4px 4px 0px #000, 0 0 15px rgba(255, 42, 109, 0.4);
-            border-radius: 4px;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
+            background: rgba(10, 10, 15, 0.9);
+            border: 2px solid #ff2a6d;
+            padding: 10px 16px;
+            box-shadow: 0 0 20px rgba(255, 42, 109, 0.3);
+            border-radius: 20px;
+            gap: 12px;
         }
 
         .design-controls button {
             background: #000;
             color: #05d9e8;
-            border: 2px solid #05d9e8;
-            padding: 8px 10px;
+            border: 1.5px solid #05d9e8;
+            padding: 8px 12px;
             font-size: 7px;
             cursor: pointer;
-            box-shadow: 2px 2px 0px #008b9b;
+            border-radius: 12px;
+            font-family: 'Press Start 2P', cursive;
             transition: all 0.2s ease;
         }
 
@@ -173,108 +178,93 @@
             background: #ff2a6d;
             color: #fff;
             border-color: #ff2a6d;
-            box-shadow: 2px 2px 0px #9b004c;
+            box-shadow: 0 0 10px #ff2a6d;
         }
 
-        /* 3D Admin Sidebar / Visitor Log */
+        /* Admin Sidebar */
         .admin-sidebar {
             display: none;
             position: fixed;
             top: 20px;
             left: 20px;
             z-index: 20;
-            background: #111;
-            border: 4px solid #05d9e8;
+            background: rgba(17, 17, 24, 0.95);
+            border: 3px solid #05d9e8;
             padding: 18px 12px;
-            width: 310px;
-            max-height: 82vh;
+            width: 300px;
+            max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 
-                6px 6px 0px #008b9b, 
-                12px 12px 0px #000, 
-                0 0 20px rgba(5, 217, 232, 0.4);
-            transform: perspective(600px) rotateY(4deg) rotateX(2deg);
-            transition: transform 0.3s ease;
-        }
-        
-        .admin-sidebar:hover {
-            transform: perspective(600px) rotateY(0deg) rotateX(0deg);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(5, 217, 232, 0.3);
         }
 
-        .admin-sidebar h3 { 
-            font-size: 9px; 
-            color: #05d9e8; 
-            margin-top: 0; 
-            margin-bottom: 15px; 
-            text-align: center; 
-            text-shadow: 2px 2px 0px #000, 0 0 8px #05d9e8;
-            border-bottom: 3px double #ff2a6d;
-            padding-bottom: 8px;
-            letter-spacing: 1px;
-        }
-
+        .admin-sidebar h3 { font-size: 8px; color: #05d9e8; margin: 0 0 12px 0; text-align: center; border-bottom: 2px solid #ff2a6d; padding-bottom: 8px; }
         .admin-sidebar ul { list-style: none; padding: 0; margin: 0; }
-        
-        .admin-sidebar li { 
-            background: #1a1a1a; 
-            border: 2px solid #ff2a6d; 
-            padding: 10px; 
-            margin-bottom: 12px; 
-            font-size: 8px; 
-            color: #fff; 
-            line-height: 1.6; 
-            word-break: break-all; 
-            box-shadow: 4px 4px 0px #9b004c, inset 0 0 5px rgba(255, 42, 109, 0.2);
-            position: relative;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .admin-sidebar li:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px #9b004c, inset 0 0 8px rgba(255, 42, 109, 0.4);
-        }
-
-        .admin-sidebar::-webkit-scrollbar { width: 8px; }
-        .admin-sidebar::-webkit-scrollbar-track { background: #000; border: 1px solid #05d9e8; }
-        .admin-sidebar::-webkit-scrollbar-thumb { background: #ff2a6d; box-shadow: inset -1px -1px 0px #9b004c; }
+        .admin-sidebar li { background: #000; border: 1px solid #ff2a6d; padding: 8px; margin-bottom: 8px; font-size: 8px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
     <canvas id="pixelCanvas"></canvas>
 
-    <!-- 3D Login Screen -->
+    <!-- Login Box -->
     <div class="login-box" id="loginBox">
-        <label for="userName">YOUR NAME:</label>
+        <label for="userName">YOUR NAME</label>
         <input type="text" id="userName" placeholder="Your name..." autocomplete="off">
         
-        <label for="crushName">YOUR CRUSH'S NAME:</label>
+        <label for="crushName">CRUSH'S NAME</label>
         <input type="text" id="crushName" placeholder="Crush's name..." autocomplete="off">
         
-        <button id="loginBtn" onclick="handleLogin()">SUBMIT</button>
+        <button id="loginBtn" onclick="handleLogin()">SHOW LOVE</button>
         <div class="error-msg" id="errorMsg">PLEASE FILL BOTH NAMES!</div>
     </div>
 
-    <!-- 3D Heart Screen -->
+    <!-- Heart Display Screen -->
     <div class="main-content" id="mainContent">
-        <div class="pixel-heart-container">
-            <canvas id="heartCanvas" width="16" height="14"></canvas>
-            <div class="pixel-heart-text">
-                I LOVE YOU
-                <div class="names-display" id="heartNames"></div>
+        <div class="heart-wrapper">
+            <!-- Vector Heart (No pixelation/blur) -->
+            <svg class="heart-svg" id="heartSvg" viewBox="0 0 100 90" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                    <linearGradient id="heartGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ff69b4" />
+                        <stop offset="50%" stop-color="#ff2a6d" />
+                        <stop offset="100%" stop-color="#800033" />
+                    </linearGradient>
+                    <linearGradient id="heartGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#05d9e8" />
+                        <stop offset="100%" stop-color="#004466" />
+                    </linearGradient>
+                    <linearGradient id="heartGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ffb6c1" />
+                        <stop offset="50%" stop-color="#ff1493" />
+                        <stop offset="100%" stop-color="#4a001f" />
+                    </linearGradient>
+                </defs>
+                <path id="heartPath" d="M 50,25 C 50,25 35,0 18,0 C 7,0 0,9 0,21 C 0,40 28,60 50,85 C 72,60 100,40 100,21 C 100,9 93,0 82,0 C 65,0 50,25 50,25 Z" fill="url(#heartGrad1)" />
+                <!-- Gloss Effect -->
+                <path d="M 20,8 C 28,8 35,16 38,24 C 32,20 22,16 16,22 C 14,18 16,11 20,8 Z" fill="rgba(255, 255, 255, 0.4)" />
+            </svg>
+
+            <div class="heart-text-container">
+                <div class="heart-title">I LOVE YOU</div>
+                <div class="names-row">
+                    <span id="p1">Yosef</span>
+                    <span class="heart-icon">♥</span>
+                    <span id="p2">Toto</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Live Customizer Buttons -->
+    <!-- Live Design Toolbar -->
     <div class="design-controls" id="designControls">
-        <button onclick="changeHeartStyle()">CHANGE HEART STYLE</button>
-        <button onclick="changeBackgroundStyle()">CHANGE RAIN STYLE</button>
+        <button onclick="nextHeartStyle()">CHANGE HEART</button>
+        <button onclick="nextRainStyle()">CHANGE RAIN</button>
     </div>
 
-    <!-- 3D Admin Panel -->
+    <!-- Admin Visitor Log -->
     <div class="admin-sidebar" id="adminSidebar">
-        <h3>VISITOR LOG (yosef)</h3>
+        <h3>VISITOR LOG</h3>
         <ul id="namesList"><li>Loading...</li></ul>
     </div>
 
@@ -282,190 +272,78 @@
         const BIN_ID = "6a8a29bbda38895dfe05305c"; 
         const MASTER_KEY = "$2a$10$uOfTZgyBYBrFiwvCyQxyg.o2Xy9qgj/GRPm2C2qbBNxtscnLFYJ82";
 
-        let currentHeartStyle = 0;
-        let currentBgStyle = 0;
+        let heartStyleIdx = 0;
+        let rainStyleIdx = 0;
 
         async function handleLogin() {
-            const nameInput = document.getElementById('userName').value.trim();
-            const crushInput = document.getElementById('crushName').value.trim();
-            const loginBtn = document.getElementById('loginBtn');
-            const loginBox = document.getElementById('loginBox');
-            const mainContent = document.getElementById('mainContent');
-            const heartNames = document.getElementById('heartNames');
-            const errorMsg = document.getElementById('errorMsg');
-
-            if (!nameInput || !crushInput) {
-                errorMsg.style.display = 'block';
+            const user = document.getElementById('userName').value.trim();
+            const crush = document.getElementById('crushName').value.trim();
+            if (!user || !crush) {
+                document.getElementById('errorMsg').style.display = 'block';
                 return;
             }
 
-            errorMsg.style.display = 'none';
-            loginBtn.classList.add('btn-loading');
-            loginBtn.innerText = "LOADING...";
+            document.getElementById('p1').innerText = user;
+            document.getElementById('p2').innerText = crush;
 
-            heartNames.innerHTML = `${nameInput}<br>&<br>${crushInput}`;
-
-            if (nameInput === "yosef123") {
+            if (user === "yosef123") {
                 document.getElementById('adminSidebar').style.display = 'block';
                 loadNames();
             } else {
-                saveNameToCloud(nameInput, crushInput);
+                saveNameToCloud(user, crush);
             }
 
+            document.getElementById('loginBox').style.opacity = '0';
             setTimeout(() => {
-                loginBox.style.opacity = '0';
-                setTimeout(() => {
-                    loginBox.style.display = 'none';
-                    mainContent.classList.add('show');
-                    document.getElementById('designControls').style.display = 'flex';
-                    draw3DHeart();
-                }, 400);
-            }, 1000);
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('mainContent').classList.add('show');
+                document.getElementById('designControls').style.display = 'flex';
+            }, 400);
+        }
+
+        /* 3 Heart Styles (Crisp Vector Shapes & Gradients) */
+        const heartDesigns = [
+            { path: "M 50,25 C 50,25 35,0 18,0 C 7,0 0,9 0,21 C 0,40 28,60 50,85 C 72,60 100,40 100,21 C 100,9 93,0 82,0 C 65,0 50,25 50,25 Z", fill: "url(#heartGrad1)" },
+            { path: "M 50,20 C 50,20 38,2 20,2 C 8,2 0,11 0,24 C 0,46 35,68 50,88 C 65,68 100,46 100,24 C 100,11 92,2 80,2 C 62,2 50,20 50,20 Z", fill: "url(#heartGrad2)" },
+            { path: "M 50,30 L 20,2 L 2,24 L 2,40 L 50,88 L 98,40 L 98,24 L 80,2 Z", fill: "url(#heartGrad3)" } // Retro Crystal Geometric Heart
+        ];
+
+        function nextHeartStyle() {
+            heartStyleIdx = (heartStyleIdx + 1) % heartDesigns.length;
+            const pathElem = document.getElementById('heartPath');
+            pathElem.setAttribute('d', heartDesigns[heartStyleIdx].path);
+            pathElem.setAttribute('fill', heartDesigns[heartStyleIdx].fill);
         }
 
         async function saveNameToCloud(user, crush) {
             try {
-                const resGet = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: { 'X-Master-Key': MASTER_KEY }
-                });
+                const resGet = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
                 const dataGet = await resGet.json();
                 let currentNames = Array.isArray(dataGet.record) ? dataGet.record : [];
-
-                currentNames.push({ 
-                    user: user, 
-                    crush: crush, 
-                    date: new Date().toLocaleString('en-US') 
-                });
-
+                currentNames.push({ user, crush, date: new Date().toLocaleString('en-US') });
                 await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': MASTER_KEY
-                    },
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
                     body: JSON.stringify(currentNames)
                 });
-            } catch (err) {
-                console.log("Error saving data:", err);
-            }
+            } catch (e) {}
         }
 
         async function loadNames() {
             const list = document.getElementById('namesList');
             try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: { 'X-Master-Key': MASTER_KEY }
-                });
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
                 const data = await res.json();
-                let names = data.record;
-                
                 list.innerHTML = '';
-                if (!names || names.length === 0) {
-                    list.innerHTML = '<li>No submissions yet</li>';
-                } else {
-                    names.reverse().forEach(item => {
-                        let li = document.createElement('li');
-                        let userText = item.user || item.name || "Unknown";
-                        let crushText = item.crush ? ` + ${item.crush}` : "";
-                        li.innerHTML = `<strong style="color:#fff;">${userText}${crushText}</strong><br><span style="color:#05d9e8; font-size:7px;">${item.date}</span>`;
-                        list.appendChild(li);
-                    });
-                }
-            } catch (err) {
-                list.innerHTML = '<li>Error loading data</li>';
-            }
+                data.record.reverse().forEach(item => {
+                    let li = document.createElement('li');
+                    li.innerHTML = `<strong style="color:#05d9e8">${item.user || item.name}</strong> + <strong style="color:#ff2a6d">${item.crush || ''}</strong><br><span style="color:#aaa; font-size:6px;">${item.date}</span>`;
+                    list.appendChild(li);
+                });
+            } catch (e) { list.innerHTML = '<li>Error loading log</li>'; }
         }
 
-        /* 3D Heart Renderer with Multiple Design Styles */
-        function changeHeartStyle() {
-            currentHeartStyle = (currentHeartStyle + 1) % 3;
-            draw3DHeart();
-        }
-
-        function draw3DHeart() {
-            const hCanvas = document.getElementById('heartCanvas');
-            const hCtx = hCanvas.getContext('2d');
-            
-            const heartStyles = [
-                // Style 0: Classic 3D Pixel Heart
-                {
-                    palette: { 0: 'transparent', 1: '#520028', 2: '#9b004c', 3: '#ff1493', 4: '#ff69b4', 5: '#ffb6c1', 6: '#ffffff' },
-                    map: [
-                        [0,0,1,1,1,0,0,0,0,0,0,1,1,1,0,0],
-                        [0,1,2,3,3,1,0,0,0,0,1,2,3,3,1,0],
-                        [1,2,6,5,3,3,1,0,0,1,2,3,3,3,3,1],
-                        [1,2,6,6,5,3,3,1,1,2,5,4,3,3,3,1],
-                        [1,2,5,6,6,4,3,3,2,5,4,3,3,3,3,1],
-                        [1,2,3,5,4,3,3,3,4,3,3,3,3,3,2,1],
-                        [1,2,3,3,3,3,3,3,3,3,3,3,3,2,1,0],
-                        [0,1,2,3,3,3,3,3,3,3,3,3,2,1,0,0],
-                        [0,0,1,2,3,3,3,3,3,3,3,2,1,0,0,0],
-                        [0,0,0,1,2,3,3,3,3,3,2,1,0,0,0,0],
-                        [0,0,0,0,1,2,3,3,3,2,1,0,0,0,0,0],
-                        [0,0,0,0,0,1,2,3,2,1,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,1,2,1,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]
-                    ]
-                },
-                // Style 1: Crystal Splinter Cyan/Purple Heart
-                {
-                    palette: { 0: 'transparent', 1: '#002b36', 2: '#008b9b', 3: '#05d9e8', 4: '#71f5ff', 5: '#ffffff', 6: '#ff2a6d' },
-                    map: [
-                        [0,0,1,1,1,0,0,0,0,0,0,1,1,1,0,0],
-                        [0,1,2,3,3,1,0,0,0,0,1,2,3,3,1,0],
-                        [1,2,5,4,3,3,1,0,0,1,2,3,6,3,3,1],
-                        [1,2,5,5,4,3,3,1,1,2,4,3,3,3,3,1],
-                        [1,2,4,5,5,3,3,3,2,4,3,3,3,3,3,1],
-                        [1,2,3,4,3,3,3,3,3,3,3,3,3,3,2,1],
-                        [1,2,3,3,3,3,6,3,3,3,3,3,3,2,1,0],
-                        [0,1,2,3,3,3,3,3,3,3,3,3,2,1,0,0],
-                        [0,0,1,2,3,3,3,3,3,3,3,2,1,0,0,0],
-                        [0,0,0,1,2,3,3,3,3,3,2,1,0,0,0,0],
-                        [0,0,0,0,1,2,3,3,3,2,1,0,0,0,0,0],
-                        [0,0,0,0,0,1,2,3,2,1,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,1,2,1,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]
-                    ]
-                },
-                // Style 2: Double Outline Retro Heart
-                {
-                    palette: { 0: 'transparent', 1: '#ffffff', 2: '#ff2a6d', 3: '#05d9e8', 4: '#9b004c', 5: '#008b9b' },
-                    map: [
-                        [0,0,1,1,1,0,0,0,0,0,0,1,1,1,0,0],
-                        [0,1,2,2,2,1,0,0,0,0,1,2,2,2,1,0],
-                        [1,2,3,3,3,2,1,0,0,1,2,3,3,3,2,1],
-                        [1,2,3,4,3,3,2,1,1,2,3,3,4,3,2,1],
-                        [1,2,3,4,4,3,3,2,2,3,3,4,4,3,2,1],
-                        [1,2,3,3,4,3,3,3,3,3,3,4,3,3,2,1],
-                        [1,2,3,3,3,3,3,3,3,3,3,3,3,3,2,1],
-                        [0,1,2,3,3,3,3,3,3,3,3,3,3,2,1,0],
-                        [0,0,1,2,3,3,3,3,3,3,3,3,2,1,0,0],
-                        [0,0,0,1,2,3,3,3,3,3,3,2,1,0,0,0],
-                        [0,0,0,0,1,2,3,3,3,3,2,1,0,0,0,0],
-                        [0,0,0,0,0,1,2,3,3,2,1,0,0,0,0,0],
-                        [0,0,0,0,0,0,1,2,2,1,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0]
-                    ]
-                }
-            ];
-
-            const current = heartStyles[currentHeartStyle];
-            hCanvas.width = 16;
-            hCanvas.height = 14;
-            hCtx.clearRect(0, 0, 16, 14);
-
-            for (let r = 0; r < current.map.length; r++) {
-                for (let c = 0; c < current.map[r].length; c++) {
-                    let colorKey = current.map[r][c];
-                    if (colorKey !== 0) {
-                        hCtx.fillStyle = current.palette[colorKey];
-                        hCtx.fillRect(c, r, 1, 1);
-                    }
-                }
-            }
-        }
-
-        /* 3D Falling Particles Canvas Animation */
+        /* Particles Background System */
         const canvas = document.getElementById('pixelCanvas');
         const ctx = canvas.getContext('2d');
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -473,106 +351,46 @@
         window.addEventListener('resize', resizeCanvas);
 
         let particles = [];
-
-        function changeBackgroundStyle() {
-            currentBgStyle = (currentBgStyle + 1) % 3;
-            initParticles();
-        }
-
         function initParticles() {
             particles = [];
-            let types = ['heart', 'star', 'plus', 'dot'];
-            if (currentBgStyle === 1) types = ['star', 'dot'];
-            if (currentBgStyle === 2) types = ['heart'];
-
-            for (let i = 0; i < 45; i++) {
+            for (let i = 0; i < 50; i++) {
                 particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.floor(Math.random() * 2) + 2,
-                    speed: Math.random() * 1.5 + 0.8,
-                    type: types[Math.floor(Math.random() * types.length)]
+                    size: Math.random() * 3 + 2,
+                    speed: Math.random() * 1.2 + 0.6
                 });
             }
         }
         initParticles();
 
-        function draw3DParticleHeart(x, y, scale) {
-            const colors = { 1: '#ffffcc', 2: '#ffb6c1', 3: '#ff1493', 4: '#9b004c' };
-            const map = [
-                [0,4,4,0,4,4,0],
-                [4,1,2,4,2,3,4],
-                [4,2,2,3,3,3,4],
-                [0,4,3,3,3,4,0],
-                [0,0,4,3,4,0,0],
-                [0,0,0,4,0,0,0]
-            ];
-            for (let r = 0; r < map.length; r++) {
-                for (let c = 0; c < map[r].length; c++) {
-                    if (map[r][c] !== 0) {
-                        ctx.fillStyle = colors[map[r][c]];
-                        ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
-                    }
-                }
-            }
-        }
-
-        function draw3DStar(x, y, scale) {
-            const colors = { 1: '#ffffcc', 2: '#ffb6c1', 3: '#05d9e8' };
-            const map = [
-                [0,0,1,0,0],
-                [0,1,2,1,0],
-                [1,2,3,2,1],
-                [0,1,2,1,0],
-                [0,0,1,0,0]
-            ];
-            for (let r = 0; r < map.length; r++) {
-                for (let c = 0; c < map[r].length; c++) {
-                    if (map[r][c] !== 0) {
-                        ctx.fillStyle = colors[map[r][c]];
-                        ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
-                    }
-                }
-            }
-        }
-
-        function draw3DPlus(x, y, scale) {
-            const colors = { 1: '#ffffcc', 2: '#ff69b4' };
-            const map = [
-                [0,1,0],
-                [1,2,1],
-                [0,1,0]
-            ];
-            for (let r = 0; r < map.length; r++) {
-                for (let c = 0; c < map[r].length; c++) {
-                    if (map[r][c] !== 0) {
-                        ctx.fillStyle = colors[map[r][c]];
-                        ctx.fillRect(x + c * scale, y + r * scale, scale, scale);
-                    }
-                }
-            }
-        }
-
-        function draw3DDot(x, y, scale) {
-            ctx.fillStyle = '#05d9e8';
-            ctx.fillRect(x, y, scale * 2, scale * 2);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(x, y, scale, scale);
+        function nextRainStyle() {
+            rainStyleIdx = (rainStyleIdx + 1) % 3;
         }
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (let p of particles) {
-                if (p.type === 'heart') draw3DParticleHeart(p.x, p.y, p.size);
-                else if (p.type === 'star') draw3DStar(p.x, p.y, p.size);
-                else if (p.type === 'plus') draw3DPlus(p.x, p.y, p.size);
-                else draw3DDot(p.x, p.y, p.size);
+                if (rainStyleIdx === 0) {
+                    // Hearts Rain
+                    ctx.fillStyle = '#ff2a6d';
+                    ctx.font = `${p.size * 4}px Arial`;
+                    ctx.fillText('♥', p.x, p.y);
+                } else if (rainStyleIdx === 1) {
+                    // Stars Rain
+                    ctx.fillStyle = '#05d9e8';
+                    ctx.fillRect(p.x, p.y, p.size * 2, p.size * 2);
+                } else {
+                    // Glowing Pixels
+                    ctx.fillStyle = '#fff';
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#ff2a6d';
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                    ctx.shadowBlur = 0;
+                }
 
                 p.y += p.speed;
-                if (p.y > canvas.height) { 
-                    p.y = -20; 
-                    p.x = Math.random() * canvas.width; 
-                }
+                if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
             }
             requestAnimationFrame(animate);
         }
